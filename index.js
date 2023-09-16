@@ -22,6 +22,18 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
+        const stManageDB = client.db('sujon-telecom').collection('PackagesList');
+
+        app.get('/packages', async(req, res)=>{
+            const result = await stManageDB.find().toArray();
+            res.send(result)
+        });
+        app.post('/packages', async(req, res) =>{
+            const query = req.body;
+            console.log(query)
+            const stored = await stManageDB.insertOne(query);
+            res.send(stored)
+        });
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
@@ -40,4 +52,4 @@ app.get('/', async (req, res) => {
 });
 app.listen(port, async (req, res) => {
     console.log(port, "the server running")
-})
+});
