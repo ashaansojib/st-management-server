@@ -30,8 +30,23 @@ async function run() {
         });
         app.post('/packages', async (req, res) => {
             const query = req.body;
-            const stored = await stManageDB.insertOne(query);
-            res.send(stored)
+            const existingDocument = await stManageDB.findOne({ _id: query._id });
+            if (!existingDocument) {
+                // If the document doesn't exist, create it with the new data
+                query.total = query.quantity;
+                const result = await stManageDB.insertOne(query);
+                res.send(result)
+            } else {
+                // If the document exists, update the total by adding the new quantity
+                const newTotal = existingDocument.total + query.quantity;
+                // Update the document with the new total
+                const result = await stManageDB.findOneAndUpdate(
+                    { _id: query._id },
+                    { $set: { total: newTotal } },
+                    { returnOriginal: false }
+                );
+                res.send(result)
+            }
         });
         app.delete('/delete-combo/:id', async (req, res) => {
             const id = req.params.id;
