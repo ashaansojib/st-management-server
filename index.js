@@ -23,30 +23,15 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const stManageDB = client.db('sujon-telecom').collection('PackagesList');
-
+        const payment = client.db('sujon-telecom').collection('payItem');
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
             res.send(result)
         });
         app.post('/packages', async (req, res) => {
             const query = req.body;
-            const existingDocument = await stManageDB.findOne({ _id: query._id });
-            if (!existingDocument) {
-                // If the document doesn't exist, create it with the new data
-                query.total = query.quantity;
-                const result = await stManageDB.insertOne(query);
-                res.send(result)
-            } else {
-                // If the document exists, update the total by adding the new quantity
-                const newTotal = existingDocument.total + query.quantity;
-                // Update the document with the new total
-                const result = await stManageDB.findOneAndUpdate(
-                    { _id: query._id },
-                    { $set: { total: newTotal } },
-                    { returnOriginal: false }
-                );
-                res.send(result)
-            }
+            const result = await stManageDB.insertOne(query);
+            res.send(result)
         });
         app.delete('/delete-combo/:id', async (req, res) => {
             const id = req.params.id;
@@ -54,6 +39,18 @@ async function run() {
             const result = await stManageDB.deleteOne(query)
             res.send(result)
         })
+
+        app.get('/payment', async (req, res) => {
+            const query = await payment.find().toArray();
+            res.send(query)
+        })
+        app.post('/payment', async (req, res) => {
+            const query = req.body;
+            console.log(query)
+            const result = await payment.insertOne(query);
+            res.send(result)
+        })
+
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
