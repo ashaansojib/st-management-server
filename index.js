@@ -31,10 +31,19 @@ async function run() {
             const query = await customerLists.find().toArray();
             res.send(query)
         });
-        app.post('/create-customer/:item', async(req, res)=>{
+        app.post('/create-customer', async(req, res)=>{
             const query = req.body;
-            console.log(query)
+            const result = await customerLists.insertOne(query)
+            res.send(result)
         });
+        app.get('/single-customer/:id', async(req, res)=>{
+            const id = req.params.id;
+            console.log(id)
+            const query = {_id: new ObjectId(id)}
+            const findItem = await customerLists.findOne(query);
+            res.send(findItem)
+        });
+
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
             res.send(result)
