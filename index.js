@@ -24,6 +24,17 @@ async function run() {
     try {
         const stManageDB = client.db('sujon-telecom').collection('PackagesList');
         const payment = client.db('sujon-telecom').collection('payItem');
+        const customerLists = client.db('sujon-telecom').collection('customers');
+
+        // customers api
+        app.get('/customer-list', async(req, res)=>{
+            const query = await customerLists.find().toArray();
+            res.send(query)
+        });
+        app.post('/create-customer/:item', async(req, res)=>{
+            const query = req.body;
+            console.log(query)
+        });
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
             res.send(result)
@@ -39,7 +50,6 @@ async function run() {
             const result = await stManageDB.deleteOne(query)
             res.send(result)
         })
-
         app.get('/payment', async (req, res) => {
             const query = await payment.find().toArray();
             res.send(query)
@@ -50,7 +60,6 @@ async function run() {
             const result = await payment.insertOne(query);
             res.send(result)
         })
-
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
