@@ -38,7 +38,6 @@ async function run() {
         });
         app.get('/single-customer/:id', async(req, res)=>{
             const id = req.params.id;
-            console.log(id)
             const query = {_id: new ObjectId(id)}
             const findItem = await customerLists.findOne(query);
             res.send(findItem)
