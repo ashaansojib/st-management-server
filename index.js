@@ -27,22 +27,27 @@ async function run() {
         const customerLists = client.db('sujon-telecom').collection('customers');
 
         // customers api
-        app.get('/customer-list', async(req, res)=>{
+        app.get('/customer-list', async (req, res) => {
             const query = await customerLists.find().toArray();
             res.send(query)
         });
-        app.post('/create-customer', async(req, res)=>{
+        app.post('/create-customer', async (req, res) => {
             const query = req.body;
             const result = await customerLists.insertOne(query)
             res.send(result)
         });
-        app.get('/single-customer/:id', async(req, res)=>{
+        app.get('/single-customer/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) };
             const findItem = await customerLists.findOne(query);
             res.send(findItem)
         });
-
+        app.delete('/remove-customer/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await customerLists.deleteOne(query);
+            res.send(result)
+        })
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
             res.send(result)
