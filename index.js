@@ -47,19 +47,16 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await customerLists.deleteOne(query);
             res.send(result)
-        })
-        app.patch('/add-existing-item/:item', async (req, res) => {
-            // const userID = req.params.id;
-            // const query = { _id: new ObjectId(userID) };
-            // const result = await customerLists.findOne(query);
-            // if(result){
-            //     console.log(result.stock)
-            // }else{
-            //     console.log('no item found')
-            // }
-            const product = req.params.item;
-            console.log(product)
-        })
+        });
+        app.put('/add-existing-item', async (req, res) => {
+            const body = req.body;
+            const customerId = body.customerID;
+            const query = { _id: new ObjectId(customerId) };
+            const updateItem = { $push: { stock: body } };
+            const result = await customerLists.updateOne(query, updateItem);
+            res.send(result)
+        });
+
         // old st management routes
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
