@@ -33,6 +33,7 @@ async function run() {
         });
         app.post('/create-customer', async (req, res) => {
             const query = req.body;
+            query.createdAt = new Date;
             const result = await customerLists.insertOne(query)
             res.send(result)
         });
@@ -50,6 +51,7 @@ async function run() {
         });
         app.put('/add-existing-item', async (req, res) => {
             const body = req.body;
+            body.createdAt = new Date();
             const customerId = body.customerID;
             const query = { _id: new ObjectId(customerId) };
             const updateItem = { $push: { stock: body } };
