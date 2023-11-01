@@ -58,30 +58,16 @@ async function run() {
             const result = await customerLists.updateOne(query, updateItem);
             res.send(result)
         });
-        // app.delete('/remove-single-product/:customerID/:productID', async (req, res) => {
-        //     const customerId = req.params.customerID;
-        //     const productId = req.params.productID;
-        //     const customerQuery = { _id: new ObjectId(customerId) };
-        //     const removeOperation = { $pull: { stock: { productID: productId } } };
-        //     const result = await customerLists.updateOne(customerQuery, removeOperation);
-        //     res.send(result)
-        //     console.log(result)
-        //     console.log(productId)
-        // });
-        // app.delete('/remove-single-product/:customerID/:productID', async (req, res) => {
-        //     const customerId = req.params.customerID;
-        //     const productId = req.params.productID;
-        //     const customerQuery = { _id: new ObjectId(customerId) };
-        //     const foundStock = await customerLists.findOne(customerQuery);
-        //     // const result = await customerLists.updateOne(customerQuery, removeOperation);
-        //     // res.send(foundStock)
-        //     // console.log(foundStock.stock)
-        //     if(foundStock.stock){
-        //         const stock = foundStock.stock;
-        //         const product = stock.find(item = item.productID === productId);
-        //         console.log(product)
-        //     }
-        //   })
+        app.delete('/remove-single-product/:customerID/:productID', async (req, res) => {
+            const customerId = req.params.customerID;
+            const productId = req.params.productID;
+            const updateItem = await customerLists.deleteOne(
+                { _id: customerId },
+                { $pull: { stock: { price: productId } } }
+            )
+            console.log(updateItem)
+            res.send(updateItem)
+        });
         // old st management routes
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
