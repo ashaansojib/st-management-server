@@ -58,6 +58,11 @@ async function run() {
             const result = await customerLists.updateOne(query, updateItem);
             res.send(result)
         });
+        app.delete('/remove-single-product/:customerID/:productID', async (req, res) => {
+            const customerId = req.params.customerID;
+            const productId = req.params.productID;
+            console.log(customerId, productId)
+        });
 
         // old st management routes
         app.get('/packages', async (req, res) => {
