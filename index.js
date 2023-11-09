@@ -52,20 +52,20 @@ async function run() {
         // changing thinking /specifiq-product-list/654233c84ce2df7ea94f852f
         app.get('/specifiq-product-list/:id', async (req, res) => {
             const userID = req.params.id;
-            const result  = await productList.find({ customerID: userID }).toArray();
+            const result = await productList.find({ customerID: userID }).toArray();
             res.send(result)
         })
-        app.post('/add-specifiq-product', async(req, res) =>{
+        app.post('/add-specifiq-product', async (req, res) => {
             const product = req.body;
             product.createdAt = new Date;
             const result = await productList.insertOne(product);
             res.send(result)
         })
-        app.delete('remove-specifiq-product/:id', async(req, res) =>{
+        app.delete('/remove-specifiq-product/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await productList.deleteOne(query);
-            res.send(result)
+            res.send(result);
         })
         // old st management routes
         app.get('/packages', async (req, res) => {
