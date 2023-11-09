@@ -25,7 +25,7 @@ async function run() {
         const stManageDB = client.db('sujon-telecom').collection('PackagesList');
         const payment = client.db('sujon-telecom').collection('payItem');
         const customerLists = client.db('sujon-telecom').collection('customers');
-
+        const productList = client.db('sujon-telecom').collection('products')
         // customers api
         app.get('/customer-list', async (req, res) => {
             const query = await customerLists.find().toArray();
@@ -49,25 +49,24 @@ async function run() {
             const result = await customerLists.deleteOne(query);
             res.send(result)
         });
-        app.put('/add-existing-item', async (req, res) => {
-            const body = req.body;
-            body.createdAt = new Date();
-            const customerId = body.customerID;
-            const query = { _id: new ObjectId(customerId) };
-            const updateItem = { $push: { stock: body } };
-            const result = await customerLists.updateOne(query, updateItem);
+        // changing thinking /specifiq-product-list/654233c84ce2df7ea94f852f
+        app.get('/specifiq-product-list/:id', async (req, res) => {
+            const userID = req.params.id;
+            const result  = await productList.find({ customerID: userID }).toArray();
             res.send(result)
-        });
-        app.delete('/remove-single-product/:customerID/:productID', async (req, res) => {
-            const customerId = req.params.customerID;
-            const productId = req.params.productID;
-            const updateItem = await customerLists.deleteOne(
-                { _id: customerId },
-                { $pull: { stock: { price: productId } } }
-            )
-            console.log(updateItem)
-            res.send(updateItem)
-        });
+        })
+        app.post('/add-specifiq-product', async(req, res) =>{
+            const product = req.body;
+            product.createdAt = new Date;
+            const result = await productList.insertOne(product);
+            res.send(result)
+        })
+        app.delete('remove-specifiq-product/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await productList.deleteOne(query);
+            res.send(result)
+        })
         // old st management routes
         app.get('/packages', async (req, res) => {
             const result = await stManageDB.find().toArray();
